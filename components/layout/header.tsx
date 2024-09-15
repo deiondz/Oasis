@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 
 export default function Header() {
   return (
-    <header className="sticky inset-x-0 top-0 w-full">
+    <header className="sticky inset-x-0 z-20 top-0 w-full">
       <nav className="flex items-center justify-between px-6 py-4 md:justify-end">
         <div className={cn("block lg:!hidden")}>
           <MobileSidebar />

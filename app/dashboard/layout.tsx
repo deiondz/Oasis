@@ -14,9 +14,9 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex">
+    <div className="flex max-h-screen overflow-hidden">
       <Sidebar />
-      <main className="w-full flex-1 overflow-hidden">
+      <main className="w-full flex-1  overflow-y-auto">
         <Header />
         <MaxWidthContainer>{children}</MaxWidthContainer>
       </main>
