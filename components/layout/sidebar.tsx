@@ -7,7 +7,9 @@ import { navItems } from "@constants/data";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import { ChevronLeftIcon } from "@radix-ui/react-icons";
-
+import { Drop } from "iconsax-react";
+import { H3 } from "@components/typography/h3";
+import { DashboardNav } from "./dashboardnav";
 type SidebarProps = {
   className?: string;
 };
@@ -29,21 +31,17 @@ export default function Sidebar({ className }: SidebarProps) {
     >
       <div className="hidden p-5 pt-10 lg:block">
         <Link
-          href={"https://github.com/Kiranism/next-shadcn-dashboard-starter"}
+          href={"#"}
           target="_blank"
+          className="lg:flex items-center justify-start gap-2"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="mr-2 h-6 w-6"
-          >
-            <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
-          </svg>
+          <Drop size="32" variant="Broken" color="#FF8A65" />
+
+          {!isMinimized ? (
+            <h1 className={`text-2xl  font-medium`}>Oasis</h1>
+          ) : (
+            ""
+          )}
         </Link>
       </div>
       <ChevronLeftIcon
@@ -55,7 +53,9 @@ export default function Sidebar({ className }: SidebarProps) {
       />
       <div className="space-y-4 py-4">
         <div className="px-3 py-2">
-          <div className="mt-3 space-y-1"></div>
+          <div className="mt-3 space-y-1">
+            <DashboardNav items={navItems} />
+          </div>
         </div>
       </div>
     </aside>

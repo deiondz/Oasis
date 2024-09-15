@@ -1,9 +1,11 @@
 import Sidebar from "@/components/layout/sidebar";
+import Header from "@components/layout/header";
+import MaxWidthContainer from "@components/layout/maxwidthcontainer";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Next Shadcn Dashboard Starter",
-  description: "Basic dashboard with Next.js and Shadcn",
+  title: "Dashboard ",
+  description: "Dashboard page",
 };
 
 export default function DashboardLayout({
@@ -14,7 +16,10 @@ export default function DashboardLayout({
   return (
     <div className="flex">
       <Sidebar />
-      <main className="w-full flex-1 overflow-hidden">{children}</main>
+      <main className="w-full flex-1 overflow-hidden">
+        <Header />
+        <MaxWidthContainer>{children}</MaxWidthContainer>
+      </main>
     </div>
   );
 }
