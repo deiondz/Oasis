@@ -1,9 +1,9 @@
-import React from "react";
-import MonthView from "@components/month_view";
+import Calendar from "./Calendar";
+
 function Page() {
   return (
-    <div className="pb-10">
-      <MonthView />
+    <div className="pb-10 py-4">
+      <Calendar />
     </div>
   );
 }
