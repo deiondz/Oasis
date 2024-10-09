@@ -15,7 +15,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
+import { CalendarIcon, CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import * as React from "react";
 
 // Reusable Combobox Component
@@ -49,13 +49,13 @@ export function Combobox({
           aria-expanded={open}
           className="w-[200px] justify-between"
         >
+          <CalendarIcon className="h-4 w-4 shrink-0 " />
           <p
-            style={{
-              opacity: isAnimating ? 0 : 1,
-              willChange: "transform, opacity",
-              transform: isAnimating ? "translateY(-6px)" : "none",
-              transition: "opacity 0.3s ease, transform 0.3s ease", // Add smooth transition
-            }}
+            className={`transition-all duration-300 ease-in-out ${
+              isAnimating
+                ? "opacity-0 -translate-y-1"
+                : " opacity-100 translate-y-0"
+            }`}
           >
             {value
               ? items.find((item) => item.value === value)?.label
