@@ -1,3 +1,4 @@
+import DashboardWidth from "./defaultstyle";
 import Calendar from "./fullcalendar";
 
 function Page() {
@@ -76,7 +77,7 @@ function Page() {
     },
   ];
   return (
-    <div className="pb-10 py-4">
+    <DashboardWidth>
       <div className="py-3 ">
         <h2 className="lg:text-3xl text-2xl font-semibold">Book a Hall</h2>
         <p className="text-sm text-muted-foreground py-2">
@@ -85,7 +86,7 @@ function Page() {
         </p>
       </div>
       <Calendar events={events} />
-    </div>
+    </DashboardWidth>
   );
 }
 

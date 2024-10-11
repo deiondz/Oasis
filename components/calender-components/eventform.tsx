@@ -26,12 +26,35 @@ import {
 } from "@/components/ui/select"; // Fixed import path
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@components/ui/command";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+const halls = [
+  {
+    label: "Arrupe Hall",
+    value: "arrupe_auditorium",
+  },
+  {
+    label: "Magis Hall",
+    value: "ignatius_conference_room",
+  },
+  {
+    label: "Xavier Hall",
+    value: "xavier_multipurpose_hall",
+  },
+] as const;
 
 // Form schema with validation
 const formSchema = z.object({
@@ -40,8 +63,12 @@ const formSchema = z.object({
   description: z.string().min(1, "Description is required"),
   startdate: z.date({ required_error: "Start date is required" }),
   endtime: z.string().min(1, "End time is required"),
-  phonenumber: z.string().min(1, "Phone number is required"),
+  phonenumber: z
+    .string()
+    .min(10, "Invalid phone number")
+    .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number"),
   email: z.string().email("Invalid email address"),
+  hall: z.string(),
 });
 
 export default function EventForm() {
@@ -72,19 +99,85 @@ export default function EventForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4 lg:py-0 py-4 w-full mx-auto "
       >
-        <FormField
-          control={form.control}
-          name="eventname"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Event Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter event name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-2 items-baseline gap-4">
+          <div className="col-span-1">
+            <FormField
+              control={form.control}
+              name="eventname"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Event Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter event name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="col-span-1">
+            <FormField
+              control={form.control}
+              name="hall"
+              render={({ field }) => (
+                <FormItem className="flex flex-col w-full">
+                  <FormLabel>Hall</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "w-full justify-between",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value
+                            ? halls.find((hall) => hall.value === field.value)
+                                ?.label
+                            : "Select hall"}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[200px] p-0">
+                      <Command>
+                        <CommandInput placeholder="Search hall..." />
+                        <CommandList>
+                          <CommandEmpty>No hall found.</CommandEmpty>
+                          <CommandGroup>
+                            {halls.map((hall) => (
+                              <CommandItem
+                                value={hall.label}
+                                key={hall.value}
+                                onSelect={() => {
+                                  form.setValue("hall", hall.value);
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    hall.value === field.value
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                                {hall.label}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
 
         <FormField
           control={form.control}
@@ -232,7 +325,11 @@ export default function EventForm() {
                 <FormItem className="flex flex-col items-start">
                   <FormLabel>Phone Number</FormLabel>
                   <FormControl className="w-full">
-                    <Input placeholder="Enter your email address" {...field} />
+                    <Input
+                      type="tel"
+                      placeholder="Enter your phone number"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
