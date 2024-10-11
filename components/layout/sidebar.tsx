@@ -30,11 +30,7 @@ export default function Sidebar({ className }: SidebarProps) {
       )}
     >
       <div className="hidden p-5 pt-10 lg:block">
-        <Link
-          href={"#"}
-          target="_blank"
-          className="lg:flex items-center justify-start gap-2"
-        >
+        <Link href={"/"} className="lg:flex items-center justify-start gap-2">
           <Drop size="32" variant="Broken" color="#FF8A65" />
 
           {!isMinimized ? (
