@@ -136,13 +136,6 @@ const Calendar = ({ events }: CalendarProps) => {
     ));
   };
 
-  function AddEvent() {
-    return <Modal variant="secondary" />;
-  }
-  function AddEvent2() {
-    return <Modal />;
-  }
-
   const renderDaysInMonth = () => {
     const days = [];
     let day = startWeek; // Starting from the beginning of the week
@@ -187,7 +180,8 @@ const Calendar = ({ events }: CalendarProps) => {
 
               {/* Events list */}
               <div className="flex-grow overflow-hidden">
-                {eventsForDay.length === 0 && <AddEvent />} {/* No events */}
+                {eventsForDay.length === 0 && <Modal variant="secondary" />}
+                {/* No events */}
                 {eventsForDay.length === 1 && (
                   <>
                     {/* Render the single event */}
@@ -206,7 +200,7 @@ const Calendar = ({ events }: CalendarProps) => {
                     </Button>
 
                     {/* Add event button below the single event */}
-                    <AddEvent />
+                    <Modal variant="secondary" />
                   </>
                 )}
                 {eventsForDay.length > 1 && (
@@ -262,7 +256,7 @@ const Calendar = ({ events }: CalendarProps) => {
             handleYearChange={handleYearChange}
           />
           <div className="flex items-center justify-between gap-4">
-            <AddEvent2 />
+            <Modal />
             <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
             <Button variant="outline" onClick={handleToday}>
               Today
@@ -278,7 +272,7 @@ const Calendar = ({ events }: CalendarProps) => {
             handleYearChange={handleYearChange}
           />
           <div className="flex items-center justify-center gap-4">
-            <AddEvent2 />
+            <Modal />
             <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
             <Button variant="outline" onClick={handleToday}>
               This Year
