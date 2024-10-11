@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button"; // shadcn Button
 import { Card } from "@/components/ui/card"; // shadcn Card for structure
+import Modal from "@components/calender-components/modal";
 import { MonthHeader } from "@components/calender-components/monthheader";
 import { Tabs } from "@components/calender-components/tabs";
 import { YearHeader } from "@components/calender-components/yearheader";
@@ -136,23 +137,10 @@ const Calendar = ({ events }: CalendarProps) => {
   };
 
   function AddEvent() {
-    return (
-      <Button
-        variant="ghost"
-        className="inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent rounded-md w-full h-1/2 text-[8px] sm:text-xs text-muted-foreground hover:text-foreground transition-opacity truncate px-0.5 sm:px-2 sm:opacity-0 lg:py-5 sm:group-hover:opacity-100"
-      >
-        <span className="font-bold">+</span>
-        <span className="hidden sm:inline ml-1">Add Event</span>
-      </Button>
-    );
+    return <Modal variant="secondary" />;
   }
   function AddEvent2() {
-    return (
-      <Button variant="default" className="gap-2">
-        <span className="font-normal">+</span>
-        <span className="hidden text-xs font-medium sm:inline ">Add Event</span>
-      </Button>
-    );
+    return <Modal />;
   }
 
   const renderDaysInMonth = () => {
@@ -260,7 +248,7 @@ const Calendar = ({ events }: CalendarProps) => {
   };
 
   return (
-    <div className="p-2">
+    <div>
       {activeTab === "month" ? (
         <div className="flex flex-col sm:flex-row justify-between items-center mb-4 space-y-4 sm:space-y-0">
           <MonthHeader

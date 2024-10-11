@@ -123,7 +123,7 @@ export const navItems = [
   },
   {
     title: "View Reservation",
-    href: "/dashboard/employee",
+    href: "/dashboard/reservation",
     icon: "reservation",
     label: "reservation",
   },

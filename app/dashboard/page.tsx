@@ -77,6 +77,13 @@ function Page() {
   ];
   return (
     <div className="pb-10 py-4">
+      <div className="py-3 ">
+        <h2 className="lg:text-3xl text-2xl font-semibold">Book a Hall</h2>
+        <p className="text-sm text-muted-foreground py-2">
+          Reserve a hall for your upcoming events and meetings. Select a date
+          from the calendar below to get started.
+        </p>
+      </div>
       <Calendar events={events} />
     </div>
   );
