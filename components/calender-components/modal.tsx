@@ -2,20 +2,20 @@
 import {
   Credenza,
   CredenzaBody,
-  CredenzaClose,
   CredenzaContent,
   CredenzaDescription,
-  CredenzaFooter,
   CredenzaHeader,
   CredenzaTitle,
   CredenzaTrigger,
 } from "@/components/ui/credenza";
 import { Button } from "@components/ui/button";
-import { AddCircle, CalendarAdd, CalendarSearch } from "iconsax-react";
+import { AddCircle, CalendarAdd } from "iconsax-react";
 import EventForm from "./eventform";
+
 type ButtonProps = {
   variant?: "default" | "secondary"; // Optional variant type
 };
+
 function Modal({ variant = "default" }: ButtonProps) {
   return (
     <Credenza>
@@ -41,19 +41,22 @@ function Modal({ variant = "default" }: ButtonProps) {
           </Button>
         )}
       </CredenzaTrigger>
+
       <CredenzaContent className="max-w-5xl">
-        <CredenzaHeader>
+        <CredenzaHeader className="lg:px-2 px-6 ">
           <CredenzaTitle>
             <div className="flex items-center justify-start">
               <CalendarAdd className="w-6 h-6" strokeWidth={20} />
               <span className="ml-2">Add Event</span>
             </div>
           </CredenzaTitle>
-          <CredenzaDescription>
+          <CredenzaDescription className="text-left">
             Create a new event in your calendar.
           </CredenzaDescription>
         </CredenzaHeader>
-        <CredenzaBody>
+
+        {/* Make the modal body scrollable */}
+        <CredenzaBody className="max-h-[80vh]  overflow-y-auto">
           <EventForm />
         </CredenzaBody>
       </CredenzaContent>
