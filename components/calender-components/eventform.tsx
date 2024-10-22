@@ -36,12 +36,12 @@ import {
 } from "@components/ui/command";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema } from "@validation/event";
-import { addMinutes, format, isBefore, parseISO } from "date-fns";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+
 const halls = [
   {
     label: "Arrupe Hall",
@@ -55,14 +55,79 @@ const halls = [
     label: "Xavier Hall",
     value: "xavier_multipurpose_hall",
   },
+  {
+    label: "Luxury Hall",
+    value: "luxury_hall",
+  },
+  {
+    label: "Main Hall",
+    value: "main_hall",
+  },
+  {
+    label: "Conference Room A",
+    value: "conference_room_a",
+  },
+  {
+    label: "Auditorium",
+    value: "auditorium",
+  },
+  {
+    label: "Meeting Room 1",
+    value: "meeting_room_1",
+  },
+  {
+    label: "Grand Ballroom",
+    value: "grand_ballroom",
+  },
+  {
+    label: "Tech Hall",
+    value: "tech_hall",
+  },
+  {
+    label: "Ocean View Hall",
+    value: "ocean_view_hall",
+  },
+  {
+    label: "Business Center",
+    value: "business_center",
+  },
 ] as const;
 
 // Form schema with validation
 
-export default function EventForm() {
+interface Event {
+  eventname?: string;      // Name of the event
+  name?: string;           // Name of the person organizing or associated with the event
+  description?: string;    // Brief description of the event
+  startdate?: Date;      // Start date in ISO 8601 format
+  starttime?: string;      // Start time in HH:mm format
+  enddate?: Date;        // End date in ISO 8601 format
+  endtime?: string;        // End time in HH:mm format
+  phonenumber?: number;    // Phone number as a string
+  email?: string;          // Email address as a string
+  hall?: string;           // Name of the hall or venue for the event
+}
+
+
+
+export default function EventForm({ values }: { values?: Event }) {
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      eventname: values?.eventname || "",
+      hall: values?.hall || "",
+      name: values?.name || "",
+      email: values?.email || "",
+      phonenumber: values?.phonenumber || undefined,
+      description: values?.description || "",
+      startdate: values?.startdate ? new Date(values.startdate) : undefined, // Format startdate
+      starttime: values?.starttime || "",
+      enddate: values?.enddate ? new Date(values.enddate) : undefined, // Format enddate
+      endtime: values?.endtime || "",
+    },
   });
+
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     try {
@@ -123,7 +188,7 @@ export default function EventForm() {
                         >
                           {field.value
                             ? halls.find((hall) => hall.value === field.value)
-                                ?.label
+                              ?.label
                             : "Select hall"}
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
@@ -141,6 +206,7 @@ export default function EventForm() {
                                 key={hall.value}
                                 onSelect={() => {
                                   form.setValue("hall", hall.value);
+                                  console.log("Selected hall:", hall.value); // Debug log
                                 }}
                               >
                                 <Check
@@ -213,12 +279,17 @@ export default function EventForm() {
                       type="tel"
                       placeholder="Enter your phone number"
                       {...field}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        field.onChange(value ? parseInt(value.replace(/\D/g, '')) : null); // Convert to number
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
           </div>
         </div>
         <FormField
@@ -300,17 +371,12 @@ export default function EventForm() {
                         <SelectValue placeholder="Select time" />
                       </SelectTrigger>
                       <SelectContent>
-                        <ScrollArea className="h-[15rem]">
-                          {Array.from({ length: 96 }).map((_, i) => {
-                            const hour = Math.floor(i / 4)
-                              .toString()
-                              .padStart(2, "0");
-                            const minute = ((i % 4) * 15)
-                              .toString()
-                              .padStart(2, "0");
+                        <ScrollArea className="h-[200px] w-[120px]">
+                          {Array.from({ length: 24 }).map((_, index) => {
+                            const hour = index < 10 ? `0${index}:00` : `${index}:00`;
                             return (
-                              <SelectItem key={i} value={`${hour}:${minute}`}>
-                                {hour}:{minute}
+                              <SelectItem value={hour} key={hour}>
+                                {hour}
                               </SelectItem>
                             );
                           })}
@@ -318,13 +384,13 @@ export default function EventForm() {
                       </SelectContent>
                     </Select>
                   </FormControl>
-                  <FormDescription>Set the event start time.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
         </div>
+
         <div className="grid grid-cols-12 items-baseline gap-4">
           <div className="col-span-6">
             <FormField
@@ -386,17 +452,13 @@ export default function EventForm() {
                         <SelectValue placeholder="Select time" />
                       </SelectTrigger>
                       <SelectContent>
-                        <ScrollArea className="h-[15rem]">
-                          {Array.from({ length: 96 }).map((_, i) => {
-                            const hour = Math.floor(i / 4)
-                              .toString()
-                              .padStart(2, "0");
-                            const minute = ((i % 4) * 15)
-                              .toString()
-                              .padStart(2, "0");
+                        <ScrollArea className="h-[200px] w-[120px]">
+                          {Array.from({ length: 24 }).map((_, index) => {
+                            const hour =
+                              index < 10 ? `0${index}:00` : `${index}:00`;
                             return (
-                              <SelectItem key={i} value={`${hour}:${minute}`}>
-                                {hour}:{minute}
+                              <SelectItem value={hour} key={hour}>
+                                {hour}
                               </SelectItem>
                             );
                           })}
@@ -404,7 +466,6 @@ export default function EventForm() {
                       </SelectContent>
                     </Select>
                   </FormControl>
-                  <FormDescription>Set the event end time.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -412,7 +473,9 @@ export default function EventForm() {
           </div>
         </div>
 
-        <Button type="submit">Submit</Button>
+        <Button type="submit" >
+          Submit
+        </Button>
       </form>
     </Form>
   );

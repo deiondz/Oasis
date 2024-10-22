@@ -7,12 +7,14 @@ import { MonthHeader } from "@components/calender-components/monthheader";
 import { Tabs } from "@components/calender-components/tabs";
 import { YearHeader } from "@components/calender-components/yearheader";
 import YearView from "@components/calender-components/yearview";
+import EventModal from "@components/event-components/eventmodal";
 import {
   addDays,
   addMonths,
   addYears,
   format,
   getDay,
+  parseISO,
   startOfMonth,
   startOfWeek,
   subMonths,
@@ -21,9 +23,16 @@ import {
 import { useRef, useState } from "react";
 
 interface Event {
-  date: string;
-  title: string;
-  description: string;
+  eventname: string;        // Name of the event
+  name: string;            // Name of the person organizing or associated with the event
+  description: string;     // Brief description of the event
+  startdate: string;       // Start date in ISO 8601 format
+  starttime: string;       // Start time in HH:mm format
+  enddate: string;         // End date in ISO 8601 format
+  endtime: string;         // End time in HH:mm format
+  phonenumber: number;     // Phone number as a string
+  email: string;           // Email address as a string
+  hall: string;            // Name of the hall or venue for the event
 }
 
 interface CalendarProps {
@@ -72,10 +81,10 @@ const Calendar = ({ events }: CalendarProps) => {
       } else if (action === "next") {
         setCurrentDate(addMonths(currentDate, 1));
         setValue(format(addMonths(currentDate, 1), "MMMM").toLowerCase());
-        console.log(format(addMonths(currentDate, 1), "MMMM"));
+
       } else {
         const monthIndex = months.findIndex((month) => month.value === action);
-        console.log({ monthIndex, action });
+
 
         if (monthIndex !== -1) {
           setCurrentDate(new Date(currentDate.getFullYear(), monthIndex, 1));
@@ -155,25 +164,34 @@ const Calendar = ({ events }: CalendarProps) => {
 
           // Filter events for the specific day
           const eventsForDay = events.filter(
-            (event) =>
-              format(new Date(event.date), "yyyy-MM-dd") ===
-              format(day, "yyyy-MM-dd")
+            (event) => {
+              const startDate = format(parseISO(event.startdate), "yyyy-MM-dd");
+              const endDate = format(parseISO(event.enddate), "yyyy-MM-dd");
+
+              const formattedDay = format(day, "yyyy-MM-dd");
+              if (startDate === endDate) {
+                return format(new Date(event.startdate), "yyyy-MM-dd") ===
+                  format(day, "yyyy-MM-dd")
+              } else {
+                return formattedDay >= startDate && formattedDay <= endDate
+              }
+            }
           );
+
+
 
           days.push(
             <div
               key={day.toString()}
-              className={`p-1 sm:p-2 h-[80px] sm:h-[130px] border rounded relative group flex flex-col ${
-                isToday ? "text-blue-600" : "text-foreground"
-              } group`}
+              className={`p-1 sm:p-2 h-[80px] sm:h-[130px] border rounded relative group flex flex-col ${isToday ? "text-blue-600" : "text-foreground"
+                } group`}
             >
               {/* Day number */}
               <div
-                className={`font-semibold mb-1 w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-xs sm:text-sm ${
-                  isToday
-                    ? "text-white rounded-full w-6 flex items-center justify-center bg-black aspect-square"
-                    : "text-foreground"
-                }`}
+                className={`font-semibold mb-1 w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-xs sm:text-sm ${isToday
+                  ? "text-white rounded-full w-6 flex items-center justify-center bg-black aspect-square"
+                  : "text-foreground"
+                  }`}
               >
                 {format(day, "d")}
               </div>
@@ -185,19 +203,7 @@ const Calendar = ({ events }: CalendarProps) => {
                 {eventsForDay.length === 1 && (
                   <>
                     {/* Render the single event */}
-                    <Button
-                      variant="ghost"
-                      className="bg-yellow-200 w-full flex flex-col items-start justify-start dark:bg-yellow-800 text-yellow-800 dark:text-yellow-200 p-1 text-[8px] h-10 sm:text-xs rounded mb-1 cursor-pointer transition-colors duration-200 hover:bg-opacity-40 dark:hover:bg-opacity-40 border-l-4 border-l-black/70 dark:border-l-white/50"
-                    >
-                      <h2 className="font-semibold text-left w-[80px] truncate">
-                        {eventsForDay[0].title}
-                      </h2>
-                      <div className="hidden sm:block truncate ">
-                        <p className="truncate w-[80px] font-light">
-                          {eventsForDay[0].description}
-                        </p>
-                      </div>
-                    </Button>
+                    <EventModal eventdetails={eventsForDay[0]} />
 
                     {/* Add event button below the single event */}
                     <Modal variant="secondary" />
@@ -206,19 +212,7 @@ const Calendar = ({ events }: CalendarProps) => {
                 {eventsForDay.length > 1 && (
                   <>
                     {/* Render the first event */}
-                    <Button
-                      variant="ghost"
-                      className="bg-yellow-200 w-full dark:bg-yellow-800 flex flex-col items-start text-yellow-800 dark:text-yellow-200 p-1 text-[8px] h-10 sm:text-xs rounded mb-1 cursor-pointer transition-colors duration-200 hover:bg-opacity-40 dark:hover:bg-opacity-40 border-l-4 border-l-black/70 dark:border-l-white/50"
-                    >
-                      <h2 className="font-semibold  w-[80px]  truncate">
-                        {eventsForDay[0].title}
-                      </h2>
-                      <div className="hidden sm:block truncate ">
-                        <p className="truncate   w-[80px] font-light">
-                          {eventsForDay[0].description}
-                        </p>
-                      </div>
-                    </Button>
+                    <EventModal eventdetails={eventsForDay[0]} />
 
                     {/* Show "+X more" for additional events */}
                     {eventsForDay.length > 2 && (
@@ -283,11 +277,10 @@ const Calendar = ({ events }: CalendarProps) => {
       {/* Calendar Days of the Week */}
 
       <Card
-        className={` transition-all rounded-lg border bg-card duration-300 text-card-foreground shadow-sm p-2 sm:p-4  ${
-          isAnimating
-            ? " opacity-0 -translate-y-1"
-            : "opacity-100 translate-y-0"
-        }`}
+        className={` transition-all rounded-lg border bg-card duration-300 text-card-foreground shadow-sm p-2 sm:p-4  ${isAnimating
+          ? " opacity-0 -translate-y-1"
+          : "opacity-100 translate-y-0"
+          }`}
       >
         <div style={{ minWidth: "100%", display: "table" }}>
           {activeTab === "month" ? (

@@ -17,16 +17,12 @@ export const formSchema = z
     starttime: z.string().min(1, "Start time is required"),
     enddate: z.date({ required_error: "End date is required" }),
     endtime: z.string().min(1, "End time is required"),
-    phonenumber: z
-      .string()
-      .min(10, "Invalid phone number")
-      .max(11, "Invalid phone number")
-      .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number"),
+    phonenumber: z.number().min(10, { message: "Phone number must be at least 10 digits." }), // Adjust this as needed
     email: z.string().email("Invalid email address"),
     hall: z.string(),
   })
   .refine(
-    (data) => {
+    (data: { startdate: Date; starttime: string; enddate: Date; endtime: string; }) => {
       const startDate = combineDateAndTime(data.startdate, data.starttime);
       const endDate = combineDateAndTime(data.enddate, data.endtime);
       return isBefore(startDate, endDate);
@@ -37,7 +33,7 @@ export const formSchema = z
     }
   )
   .refine(
-    (data) => {
+    (data: { startdate: Date; starttime: string; enddate: Date; endtime: string; }) => {
       const startDate = combineDateAndTime(data.startdate, data.starttime);
       const endDate = combineDateAndTime(data.enddate, data.endtime);
       return isBefore(startDate, endDate);
